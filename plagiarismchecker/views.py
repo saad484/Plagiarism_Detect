@@ -21,42 +21,7 @@ def test(request):
     print("Output.....................!!!!!!!!",percent,link)
     return render(request, 'pc/index.html',{'link': link, 'percent': percent})
 
-#web search file(.txt, .docx)
-''' def filetest(request):
-    value = ''    
-    print(request.FILES['docfile'])
-    if str(request.FILES['docfile']).endswith(".txt"):
-        value = str(request.FILES['docfile'].read())
-
-    elif str(request.FILES['docfile']).endswith(".docx"):
-        document = Document(request.FILES['docfile'])
-        for para in document.paragraphs:
-            value += para.text
-
-    elif str(request.FILES['docfile']).endswith(".pdf"):
-        # creating a pdf file object 
-        pdfFileObj = open(request.FILES['docfile'], 'rb') 
-
-        # creating a pdf reader object 
-        pdfReader = PyPDF2.PdfFileReader(pdfFileObj) 
-
-        # printing number of pages in pdf file 
-        print(pdfReader.numPages) 
-
-        # creating a page object 
-        pageObj = pdfReader.getPage(0) 
-
-        # extracting text from page 
-        print(pageObj.extractText()) 
-
-        # closing the pdf file object 
-        pdfFileObj.close() 
-
-
-    percent,link = main.findSimilarity(value)
-    print("Output...................!!!!!!!!",percent,link)
-    return render(request, 'pc/index.html',{'link': link, 'percent': percent})
-'''
+#web search file(.txt, .docx, .pdf)
 def filetest(request):
     value = ''
 
@@ -108,10 +73,23 @@ def twofiletest1(request):
 def twofilecompare1(request):
     value1 = ''
     value2 = ''
+    
+    # Function to extract text from PDF
+    def extract_text_from_pdf(file):
+        try:
+            pdf_reader = PdfReader(file)
+            text = ""
+            for page_num in range(min(3, len(pdf_reader.pages))):  # Limit to first 3 pages for demo
+                page = pdf_reader.pages[page_num]
+                text += page.extract_text()
+            return text
+        except Exception as e:
+            return f"Error reading PDF: {e}"
+
     if (str(request.FILES['docfile1'])).endswith(".txt") and (str(request.FILES['docfile2'])).endswith(".txt"):
         value1 = str(request.FILES['docfile1'].read())
         value2 = str(request.FILES['docfile2'].read())
-
+    
     elif (str(request.FILES['docfile1'])).endswith(".docx") and (str(request.FILES['docfile2'])).endswith(".docx"):
         document = Document(request.FILES['docfile1'])
         for para in document.paragraphs:
@@ -120,7 +98,11 @@ def twofilecompare1(request):
         for para in document.paragraphs:
             value2 += para.text
 
-    result = fileSimilarity.findFileSimilarity(value1,value2)
+    elif (str(request.FILES['docfile1'])).endswith(".pdf") and (str(request.FILES['docfile2'])).endswith(".pdf"):
+        value1 = extract_text_from_pdf(request.FILES['docfile1'])
+        value2 = extract_text_from_pdf(request.FILES['docfile2'])
+
+    result = fileSimilarity.findFileSimilarity(value1, value2)
     
-    print("Output..................!!!!!!!!",result)
-    return render(request, 'pc/doc_compare.html',{'result': result})
+    print("Output..................!!!!!!!!", result)
+    return render(request, 'pc/doc_compare.html', {'result': result})
