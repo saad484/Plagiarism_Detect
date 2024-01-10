@@ -4,7 +4,7 @@ import re
 WORD = re.compile(r'\w+')
 
 # Example string
-text = "This is an example, sentence! with some words."
+text = "This is an example, sentence!, [with] some words.++"
 
 # Use the regular expression to find all words in the string
 matches = WORD.findall(text)
