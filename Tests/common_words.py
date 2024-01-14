@@ -1,3 +1,4 @@
+# here an example of comman words
 
 vec1 = {'apple': 3, 'banana': 2, 'orange': 1}
 vec2 = {'apple': 1, 'banana': 4, 'grape': 2}
