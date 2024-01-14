@@ -1,6 +1,6 @@
 # Plagiarsim Detection
 
-Plagiarsim Detection using cosine algorithm
+Plagiarsim Detection using cosine similarity algorithm
 
 
 ## How to Run?
